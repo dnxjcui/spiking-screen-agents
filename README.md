@@ -15,7 +15,8 @@ Neuromorphic event streaming, visualization, and a simple spiking policy (SNN) t
   - `pong_env.py`: thin Gymnasium ALE/Pong wrapper
 - `src/app/`
   - `run_udp_visualizer.py`: Entry to run the visualizer using UDP as source
-- `src/all_code.py`: SNN model, encoder, training loop, and CLI
+- `src/encoders/event_encoder.py`: frame -> ON/OFF event encoder
+- `src/models/`: SNN and model factory
 - `src/event_receiver.py`: UDP inference helper (policy on live event stream)
 
 ## Dependencies
@@ -55,7 +56,7 @@ Send properly formatted UDP packets to `127.0.0.1:9999`. The canvas will show gr
 Train with event-encoded frames (ON/OFF from frame diffs):
 
 ```
-python -m src.all_code train --episodes 50 --render --save pong_snn.pt
+python -m src.app.train --episodes 50 --render --save pong_snn.pt
 ```
 
 Flags:
@@ -69,7 +70,7 @@ Flags:
 Run the trained policy on live UDP events:
 
 ```
-python -m src.all_code infer-udp --model pong_snn.pt --port 9999
+python -m src.app.infer_udp --model pong_snn.pt --port 9999
 ```
 
 This constructs 2xHxW ON/OFF maps from UDP events at ~30Hz and outputs an action (noop/up/down) with probabilities.
