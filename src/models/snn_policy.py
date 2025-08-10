@@ -14,27 +14,31 @@ class SNNPolicy(nn.Module):
         self.device = device
         spike_grad = surrogate.fast_sigmoid()
         self.conv1 = nn.Conv2d(in_ch, 32, kernel_size=5, stride=2, padding=2)
-        self.lif1 = snn.Leaky(beta=beta, spike_grad=spike_grad, init_hidden=True)
+        self.lif1 = snn.Leaky(beta=beta, spike_grad=spike_grad, init_hidden=False)
         self.conv2 = nn.Conv2d(32, 64, kernel_size=3, stride=2, padding=1)
-        self.lif2 = snn.Leaky(beta=beta, spike_grad=spike_grad, init_hidden=True)
+        self.lif2 = snn.Leaky(beta=beta, spike_grad=spike_grad, init_hidden=False)
         self.conv3 = nn.Conv2d(64, 64, kernel_size=3, stride=2, padding=1)
-        self.lif3 = snn.Leaky(beta=beta, spike_grad=spike_grad, init_hidden=True)
+        self.lif3 = snn.Leaky(beta=beta, spike_grad=spike_grad, init_hidden=False)
 
         # compute conv output size for 84x84 with strides 2,2,2
         # 84 -> 42 -> 21 -> 11 (approx with padding)
         self.fc_in = 64 * 11 * 11
         self.fc = nn.Linear(self.fc_in, 128)
-        self.lif4 = snn.Leaky(beta=beta, spike_grad=spike_grad, init_hidden=True)
+        self.lif4 = snn.Leaky(beta=beta, spike_grad=spike_grad, init_hidden=False) # why did we do true?
         self.head = nn.Linear(128, n_actions)
 
         self.to(self.device)
 
     def reset_state(self) -> None:
         # Reset hidden states for all LIF layers
-        self.lif1.reset_states()
-        self.lif2.reset_states()
-        self.lif3.reset_states()
-        self.lif4.reset_states()
+        # self.lif1.reset_states()
+        # self.lif2.reset_states()
+        # self.lif3.reset_states()
+        # self.lif4.reset_states()
+        self.lif1.reset_hidden()
+        self.lif2.reset_hidden()
+        self.lif3.reset_hidden()
+        self.lif4.reset_hidden()
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         """x: (B, 2, H, W), returns logits (B, n_actions)."""

@@ -5,7 +5,9 @@ import gymnasium as gym
 from typing import Tuple, Any
 
 from .base import EnvConfig
-from src.all_code import ActionMapper as _ActionMapper  # reuse existing implementation minimally
+from .action_mapper import ActionMapper as _ActionMapper
+import ale_py
+
 
 
 class PongEnvWrapper:
@@ -13,6 +15,7 @@ class PongEnvWrapper:
 
     def __init__(self, cfg: EnvConfig) -> None:
         try:
+            gym.register_envs(ale_py)
             self.env = gym.make(cfg.env_id, render_mode=cfg.render_mode)
         except Exception as e:
             print(f"Failed to create '{cfg.env_id}': {e}")

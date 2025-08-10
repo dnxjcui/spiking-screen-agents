@@ -70,33 +70,8 @@ class EventEncoder:
 # Action Mapping Helper
 # ---------------------------
 
-class ActionMapper:
-    """Maps reduced action space (NOOP, UP, DOWN) -> environment action indices dynamically."""
-    def __init__(self, env):
-        meanings = env.unwrapped.get_action_meanings()
-        # find indices containing the substrings
-        self.idx_noop = None
-        self.idx_up = None
-        self.idx_down = None
-        for i, m in enumerate(meanings):
-            if "NOOP" in m and self.idx_noop is None:
-                self.idx_noop = i
-            if "UP" in m and self.idx_up is None:
-                self.idx_up = i
-            if "DOWN" in m and self.idx_down is None:
-                self.idx_down = i
-        # Fallbacks (common for Pong)
-        if self.idx_noop is None: self.idx_noop = 0
-        if self.idx_up is None:   self.idx_up = 2
-        if self.idx_down is None: self.idx_down = 3
-        self.action_list = [self.idx_noop, self.idx_up, self.idx_down]
-
-    def to_env(self, policy_action: int) -> int:
-        # policy_action in {0,1,2}
-        return self.action_list[int(policy_action)]
-
-    def n_actions(self) -> int:
-        return 3
+class ActionMapper:  # backward-compat import alias; real impl in src.envs.action_mapper
+    pass
 
 
 # ---------------------------
@@ -149,6 +124,15 @@ def train(cfg: Config):
 
             x = enc.encode(frame)  # 2 x H x W
             x = x.unsqueeze(0)     # B=1
+            if cfg.render:
+                # Optional: visualize encoder ON/OFF maps side-by-side
+                on = (x[0, 0].cpu().numpy() * 255).astype(np.uint8)
+                off = (x[0, 1].cpu().numpy() * 255).astype(np.uint8)
+                stacked = np.hstack([on, off])
+                cv2.imshow("Encoder ON (left) / OFF (right)", stacked)
+                if cv2.waitKey(1) & 0xFF == ord('q'):
+                    cfg.render = False
+                    cv2.destroyAllWindows()
             logits = policy(x)
             dist = Categorical(logits=logits)
             action_idx = dist.sample()  # in {0,1,2}
@@ -207,6 +191,7 @@ def main():
     p_train = sub.add_parser("train", help="Train on Gymnasium ALE/Pong-v5 using event-encoded frames")
     p_train.add_argument("--episodes", type=int, default=Config.max_episodes)
     p_train.add_argument("--render", action="store_true")
+    p_train.add_argument("--viz-encoder", action="store_true", help="Show side-by-side ON/OFF maps during training")
     p_train.add_argument("--save", type=str, default=Config.save_path)
     p_train.add_argument("--threshold", type=int, default=Config.diff_threshold)
     p_train.add_argument("--stride", type=int, default=Config.stride)
@@ -225,6 +210,8 @@ def main():
                      save_path=args.save,
                      lr=args.lr)
         print(cfg)
+        if args.viz_encoder:
+            print("Encoder visualization enabled.")
         train(cfg)
 
     elif args.mode == "infer-udp":
