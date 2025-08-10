@@ -2,7 +2,7 @@ import time
 import numpy as np
 import torch
 from src.utils import Config
-from src.all_code import SNNPolicy
+from src.models import make_model
 
 # ---------------------------
 # UDP Inference (optional)
@@ -50,7 +50,7 @@ class UDPEventInference:
 
     def run(self, model_path: str):
         # Load policy
-        pol = SNNPolicy(in_ch=2, n_actions=3, beta=self.cfg.beta, device=self.cfg.device)
+        pol = make_model("snn", in_ch=2, n_actions=3, beta=self.cfg.beta, device=self.cfg.device)
         state = torch.load(model_path, map_location=self.cfg.device)
         pol.load_state_dict(state["model_state"])
         pol.eval()

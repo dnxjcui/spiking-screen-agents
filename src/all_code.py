@@ -22,6 +22,7 @@ from snntorch import surrogate
 
 from src.utils import Config, set_seed
 from src.envs.factory import make_env
+from src.models import make_model
 
 
 # ---------------------------
@@ -103,53 +104,7 @@ class ActionMapper:
 # ---------------------------
 
 class SNNPolicy(nn.Module):
-    """A small CNN + LIF network. Readout head outputs logits over 3 actions (NOOP, UP, DOWN)."""
-    def __init__(self, in_ch=2, n_actions=3, beta=0.95, device="cpu"):
-        super().__init__()
-        self.device = device
-        spike_grad = surrogate.fast_sigmoid()
-        self.conv1 = nn.Conv2d(in_ch, 32, kernel_size=5, stride=2, padding=2)
-        self.lif1 = snn.Leaky(beta=beta, spike_grad=spike_grad, init_hidden=True)
-        self.conv2 = nn.Conv2d(32, 64, kernel_size=3, stride=2, padding=1)
-        self.lif2 = snn.Leaky(beta=beta, spike_grad=spike_grad, init_hidden=True)
-        self.conv3 = nn.Conv2d(64, 64, kernel_size=3, stride=2, padding=1)
-        self.lif3 = snn.Leaky(beta=beta, spike_grad=spike_grad, init_hidden=True)
-
-        # compute conv output size for 84x84 with strides 2,2,2
-        # 84 -> 42 -> 21 -> 11 (approx with padding)
-        self.fc_in = 64 * 11 * 11
-        self.fc = nn.Linear(self.fc_in, 128)
-        self.lif4 = snn.Leaky(beta=beta, spike_grad=spike_grad, init_hidden=True)
-        self.head = nn.Linear(128, n_actions)
-
-        self.to(self.device)
-
-    def reset_state(self):
-        # Reset hidden states for all LIF layers
-        self.lif1.reset_states()
-        self.lif2.reset_states()
-        self.lif3.reset_states()
-        self.lif4.reset_states()
-
-    def forward(self, x: torch.Tensor):
-        """x: (B, 2, H, W), returns logits (B, n_actions)."""
-        x = x.to(self.device)
-        # We treat a single 'timestep' here; SNN state carries across env steps
-        z = self.conv1(x)
-        spk1, mem1 = self.lif1(z)
-
-        z = self.conv2(spk1)
-        spk2, mem2 = self.lif2(z)
-
-        z = self.conv3(spk2)
-        spk3, mem3 = self.lif3(z)
-
-        z = spk3.flatten(1)
-        z = self.fc(z)
-        spk4, mem4 = self.lif4(z)
-
-        logits = self.head(spk4)  # readout from spiking activations
-        return logits
+    pass  # kept for backward-compat in imports; actual impl in src.models.snn_policy
 
 
 # ---------------------------
@@ -171,7 +126,7 @@ def train(cfg: Config):
     enc = EventEncoder(cfg.height, cfg.width, cfg.diff_threshold, cfg.stride)
 
     n_actions = action_map.n_actions()
-    policy = SNNPolicy(in_ch=2, n_actions=n_actions, beta=cfg.beta, device=cfg.device)
+    policy = make_model("snn", in_ch=2, n_actions=n_actions, beta=cfg.beta, device=cfg.device)
     optimizer = optim.Adam(policy.parameters(), lr=cfg.lr)
 
     running_return = None
