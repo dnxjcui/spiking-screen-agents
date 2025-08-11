@@ -9,7 +9,6 @@ from .action_mapper import ActionMapper as _ActionMapper
 import ale_py
 
 
-
 class PongEnvWrapper:
     """Thin wrapper around Gymnasium ALE/Pong with dynamic action mapping."""
 

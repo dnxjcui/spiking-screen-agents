@@ -56,7 +56,7 @@ Send properly formatted UDP packets to `127.0.0.1:9999`. The canvas will show gr
 Train with event-encoded frames (ON/OFF from frame diffs):
 
 ```
-python -m src.app.train --episodes 50 --render --save pong_snn.pt
+python -m src.app.train_ppo --episodes 50 --render --save pong_snn.pt
 ```
 
 Flags:
@@ -71,6 +71,19 @@ Run the trained policy on live UDP events:
 
 ```
 python -m src.app.infer_udp --model pong_snn.pt --port 9999
+## Live training/testing against a windowed game via UDP events
+
+Control a running windowed Pong-like game using UDP event stream and keyboard actions:
+
+```
+python -m src.app.live_udp_control --model pong_snn.pt --port 9999 --window-ms 50 --kill-key esc
+```
+
+Notes:
+- Uses the same UDP format as the visualizer.
+- Aggregates events over a 50 ms window into a 2xHxW ON/OFF tensor.
+- Sends arrow key presses; press ESC to stop.
+
 ```
 
 This constructs 2xHxW ON/OFF maps from UDP events at ~30Hz and outputs an action (noop/up/down) with probabilities.

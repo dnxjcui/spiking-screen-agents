@@ -31,10 +31,6 @@ class SNNPolicy(nn.Module):
 
     def reset_state(self) -> None:
         # Reset hidden states for all LIF layers
-        # self.lif1.reset_states()
-        # self.lif2.reset_states()
-        # self.lif3.reset_states()
-        # self.lif4.reset_states()
         self.lif1.reset_hidden()
         self.lif2.reset_hidden()
         self.lif3.reset_hidden()
