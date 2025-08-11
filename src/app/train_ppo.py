@@ -49,7 +49,8 @@ class PPOAgent:
         self.action_size = self.action_map.n_actions()
         
         # Determine if we need vision processing or state-based
-        self.use_vision = model_type in ["snn_ac", "traditional_ac"]
+        # Vision models are only for Pong environment
+        self.use_vision = model_type in ["snn_ac", "traditional_ac"] and env_name == "pong"
         
         if self.use_vision:
             # Vision-based setup (Pong)
@@ -171,7 +172,8 @@ class PPOAgent:
                 reward = -1 if terminal else reward
                 
                 # Store experience
-                self.add_memory(current_state, action, reward/10.0, new_state, terminal, prob_a[action].item())
+                action_prob = prob_a[0, action].item() if len(prob_a.shape) > 1 else prob_a[action].item()
+                self.add_memory(current_state, action, reward/10.0, new_state, terminal, action_prob)
                 
                 current_state = new_state
                 total_episode_reward += reward
@@ -412,12 +414,17 @@ def main() -> int:
         config.k_epoch = 8         # More epochs per update
         config.max_episodes = min(config.max_episodes, 2000)  # CartPole can take longer to solve
     
-    # Auto-select model if needed
-    if args.model == "auto":
-        if args.env == "pong":
-            args.model = "snn_ac"
-        else:  # cartpole
-            args.model = "snn_state_ac"
+    # Validate model-environment compatibility
+    vision_models = ["snn_ac", "traditional_ac"]
+    state_models = ["snn_state_ac", "traditional_state_ac"]
+    
+    if args.env == "pong" and args.model in state_models:
+        print(f"Warning: Model '{args.model}' is state-based but Pong requires vision-based models.")
+        print(f"Consider using: {', '.join(vision_models)}")
+    elif args.env == "cartpole" and args.model in vision_models:
+        print(f"Error: Model '{args.model}' is vision-based but CartPole requires state-based models.")
+        print(f"Use one of: {', '.join(state_models)}")
+        return 1
     
     # Set random seed
     set_seed(123)

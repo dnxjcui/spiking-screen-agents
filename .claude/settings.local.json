@@ -11,7 +11,14 @@
       "Bash(\"C:\\Users\\dnxjc\\OneDrive\\Desktop\\CURR\\PROJECTS\\neuromorphic_screens\\env\\Scripts\\python.exe\" eval_model.py --model test_cartpole_dqn.pt --episodes 2 --deterministic)",
       "Bash(\"C:\\Users\\dnxjc\\OneDrive\\Desktop\\CURR\\PROJECTS\\neuromorphic_screens\\env\\Scripts\\python.exe\" eval_model.py --model test_cartpole_ppo.pt --episodes 2 --deterministic)",
       "Bash(\"C:\\Users\\dnxjc\\OneDrive\\Desktop\\CURR\\PROJECTS\\neuromorphic_screens\\env\\Scripts\\python.exe\" eval_model.py --model data/models/cartpole_dql.pt --episodes 2 --deterministic)",
-      "Bash(\"C:\\Users\\dnxjc\\OneDrive\\Desktop\\CURR\\PROJECTS\\neuromorphic_screens\\env\\Scripts\\python.exe\" eval_model.py --model data/models/cartpole_dql.pt --episodes 1 --deterministic --max_steps 50)"
+      "Bash(\"C:\\Users\\dnxjc\\OneDrive\\Desktop\\CURR\\PROJECTS\\neuromorphic_screens\\env\\Scripts\\python.exe\" eval_model.py --model data/models/cartpole_dql.pt --episodes 1 --deterministic --max_steps 50)",
+      "Bash(\"C:\\Users\\dnxjc\\OneDrive\\Desktop\\CURR\\PROJECTS\\neuromorphic_screens\\env\\Scripts\\python.exe\" -m src.app.train_ppo --env cartpole --model traditional_ac --episodes 5)",
+      "Bash(\"C:\\Users\\dnxjc\\OneDrive\\Desktop\\CURR\\PROJECTS\\neuromorphic_screens\\env\\Scripts\\python.exe\" -m src.app.train_ppo --env cartpole --model traditional_state_ac --episodes 5 --save data/models/cartpole_ppo.pt)",
+      "Bash(\"C:\\Users\\dnxjc\\OneDrive\\Desktop\\CURR\\PROJECTS\\neuromorphic_screens\\env\\Scripts\\python.exe\" -m src.app.train_ppo --env cartpole --model traditional_state_ac --episodes 10 --save data/models/cartpole_ppo.pt)",
+      "Bash(\"C:\\Users\\dnxjc\\OneDrive\\Desktop\\CURR\\PROJECTS\\neuromorphic_screens\\env\\Scripts\\python.exe\" -m src.app.train_ppo --env cartpole --model auto --episodes 3 --save test_auto_cartpole.pt)",
+      "Bash(\"C:\\Users\\dnxjc\\OneDrive\\Desktop\\CURR\\PROJECTS\\neuromorphic_screens\\env\\Scripts\\python.exe\" -m src.app.train_ppo --env cartpole --model traditional_state_ac --episodes 2)",
+      "Bash(\"C:\\Users\\dnxjc\\OneDrive\\Desktop\\CURR\\PROJECTS\\neuromorphic_screens\\env\\Scripts\\python.exe\" -m src.app.train_ppo --env cartpole --model snn_state_ac --episodes 2)",
+      "Bash(\"C:\\Users\\dnxjc\\OneDrive\\Desktop\\CURR\\PROJECTS\\neuromorphic_screens\\env\\Scripts\\python.exe\" -m src.app.train_ppo --env pong --model snn_ac --episodes 2)"
     ],
     "deny": []
   }
