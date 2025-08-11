@@ -30,3 +30,6 @@ Thumbs.db
 *.md
 !README.md
 .cursorignore
+
+example_code/
+runs/

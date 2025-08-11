@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python -m src.app.train_ppo:*)",
+      "Bash(pip install:*)",
+      "Bash(source:*)",
+      "Bash(\"C:\\Users\\dnxjc\\OneDrive\\Desktop\\CURR\\PROJECTS\\neuromorphic_screens\\env\\Scripts\\python.exe\" -m src.app.train --env cartpole --model dqn --episodes 10 --save test_cartpole_dqn.pt)",
+      "Bash(\"C:\\Users\\dnxjc\\OneDrive\\Desktop\\CURR\\PROJECTS\\neuromorphic_screens\\env\\Scripts\\python.exe\" -m src.app.train --env cartpole --model dqn --episodes 5 --save test_cartpole_dqn.pt)",
+      "Bash(\"C:\\Users\\dnxjc\\OneDrive\\Desktop\\CURR\\PROJECTS\\neuromorphic_screens\\env\\Scripts\\python.exe\" -m src.app.train_ppo --env cartpole --model traditional_state_ac --episodes 5 --save test_cartpole_ppo.pt)",
+      "Bash(\"C:\\Users\\dnxjc\\OneDrive\\Desktop\\CURR\\PROJECTS\\neuromorphic_screens\\env\\Scripts\\python.exe\" -m src.app.train_ppo --env cartpole --model traditional_state_ac --episodes 2 --save test_cartpole_ppo.pt)",
+      "Bash(\"C:\\Users\\dnxjc\\OneDrive\\Desktop\\CURR\\PROJECTS\\neuromorphic_screens\\env\\Scripts\\python.exe\" eval_model.py --model test_cartpole_dqn.pt --episodes 2 --deterministic)",
+      "Bash(\"C:\\Users\\dnxjc\\OneDrive\\Desktop\\CURR\\PROJECTS\\neuromorphic_screens\\env\\Scripts\\python.exe\" eval_model.py --model test_cartpole_ppo.pt --episodes 2 --deterministic)",
+      "Bash(\"C:\\Users\\dnxjc\\OneDrive\\Desktop\\CURR\\PROJECTS\\neuromorphic_screens\\env\\Scripts\\python.exe\" eval_model.py --model data/models/cartpole_dql.pt --episodes 2 --deterministic)",
+      "Bash(\"C:\\Users\\dnxjc\\OneDrive\\Desktop\\CURR\\PROJECTS\\neuromorphic_screens\\env\\Scripts\\python.exe\" eval_model.py --model data/models/cartpole_dql.pt --episodes 1 --deterministic --max_steps 50)"
+    ],
+    "deny": []
+  }
+}
