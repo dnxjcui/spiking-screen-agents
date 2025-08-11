@@ -27,4 +27,9 @@ Thumbs.db
 *.ckpt
 *.bin
 *.log
+*.md
+!README.md
+.cursorignore
 
+example_code/
+runs/
